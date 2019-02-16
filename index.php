@@ -28,3 +28,8 @@ if (($h = fopen("project1.csv", "r")) !== FALSE) {
     }
 
 
+// Display the code in a readable format
+    echo "<pre>";
+    var_dump($the_big_array);
+    echo "</pre>";
+}
