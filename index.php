@@ -1,35 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<link rel="stylesheet" href="dist/css/bootstrap.min.css"> 
+	
+	<script src="dist/js/bootstrap.min.js"></script>
+</head>
+<body>
 <?php
-// Open the file for reading
-if (($h = fopen("project1.csv", "r")) !== FALSE) {
-    // Convert each line into the local $data variable
-    while (($data = fgetcsv($h, 800, ",")) !== FALSE) {
-        // Read the data from a single line
+
+class CsvReader {
+
+    private $file; 
+
+    public function __construct($filename) {
+        $this->file = $filename;
     }
 
-    // Close the file
-    fclose($h);
+    // Returns and bi-dimensional array iterable with foreach
+    public function getCsv() {
 
-    $filename = 'project1.csv';
+        $csv = [];
 
-// The nested array to hold all the arrays
-    $the_big_array = [];
-
-    // Open the file for reading
-    if (($h = fopen("{$filename}", "r")) !== FALSE) {
-        // Each line in the file is converted into an individual array that we call $data
-        // The items of the array are comma separated
-        while (($data = fgetcsv($h, 1000, ",")) !== FALSE) {
-            // Each individual array is being pushed into the nested array
-            $the_big_array[] = $data;
+        if (($handle = fopen($this->file, "r")) !== FALSE) {
+            while (($data = fgetcsv($handle)) !== FALSE) {
+                $csv[] = $data;
+            }
+            fclose($handle);
         }
+		
+		$this->generateTable($csv);
 
-        // Close the file
-        fclose($h);
+        //return $csv;
     }
 
+	//Function for formating the csv data to html table
+	
+	protected function generateTable($csv){
+		//print count($csv);
+		print '<table class="table table-striped">';
+		for($i=0;$i<count($csv);$i++ ){
+			
+			if($i==0) {
+				print '<thead class="thead-dark">';
+				print '<tr>';
+				for($j=0;$j<count($csv[$i]);$j++ ){
+					print '<th>'.$csv[$i][$j].'</th>';
+				}
+				print '</tr>';
+				print '</thead>';
+			}
+			else {
+				print '<tr>';
+				for($j=0;$j<count($csv[$i]);$j++ ){
+					print '<td>'.$csv[$i][$j].'</td>';
+				}
+				print '</tr>';
+			}
+		}
+		print '</table>';
+		
+	}
 
-// Display the code in a readable format
-    echo "<pre>";
-    var_dump($the_big_array);
-    echo "</pre>";
 }
+
+
+$reader = new CsvReader('project1.csv');
+$reader->getCsv();
+?>
+
+</body>
+
+</html>
